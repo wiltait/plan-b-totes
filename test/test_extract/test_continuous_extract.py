@@ -60,7 +60,7 @@ def test_continuous_extract_successful_extraction(
 
     # Ensure S3 'get_object' method was called with the correct arguments
     mock_s3_client.get_object.assert_called_once_with(
-        Bucket="banana-squad-code", Key="last_extracted.txt"
+        Bucket="will-code-bucket", Key="last_extracted.txt"
     )
 
     # Ensure that the database queries were called with correct SQL
