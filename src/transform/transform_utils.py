@@ -21,8 +21,10 @@ TABLES = [
 def extract_files_from_event(event):
     """
     Extracts file paths from an S3-triggered event or defaults to processing all tables.
+    Includes an 'initial_extract' prefix for batch scenarios.
     """
-    if 'Records' in event:
+    files = []
+    if 'Records' in event:  # S3-triggered event
         files = [
             {
                 'bucket': record['s3']['bucket']['name'],
@@ -31,11 +33,15 @@ def extract_files_from_event(event):
             for record in event['Records']
         ]
         logging.info(f"Triggered by S3 event for files: {files}")
-        return files
     else:
-        # Default to processing all tables in batch mode
+        # Add batch processing scenario for all tables and initial_extract
         logging.info("No S3 event detected; falling back to batch processing.")
-        return [{"bucket": SOURCE_BUCKET, "key": f"{table}/"} for table in TABLES]
+        files = [{"bucket": SOURCE_BUCKET, "key": f"{table}/"} for table in TABLES]
+        files.append({"bucket": SOURCE_BUCKET, "key": "initial_extract/"})
+        logging.info(f"Including 'initial_extract/' in batch processing.")
+
+    return files
+
 
 def load_raw_data(triggered_files):
     """
