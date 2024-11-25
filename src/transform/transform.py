@@ -96,13 +96,25 @@ def perform_transformations(raw_data):
     Performs transformations for all tables.
     """
     transformed_data = {}
+    
+    # Existing transformations
     transformed_data['dim_date'] = transform_dim_date(raw_data.get('sales_order', pd.DataFrame()))
     transformed_data['dim_staff'] = transform_dim_staff(
         raw_data.get('staff', pd.DataFrame()), 
         raw_data.get('department', pd.DataFrame())
     )
-    # Add other transformations here...
+    
+    # Additional transformations
+    transformed_data['dim_counterparty'] = transform_dim_counterparty(raw_data.get('counterparty', pd.DataFrame()))
+    transformed_data['dim_currency'] = transform_dim_currency(raw_data.get('currency', pd.DataFrame()))
+    transformed_data['dim_transaction'] = transform_dim_transaction(
+        raw_data.get('transaction', pd.DataFrame()), 
+        raw_data.get('payment', pd.DataFrame())
+    )
+    transformed_data['dim_address'] = transform_dim_address(raw_data.get('address', pd.DataFrame()))
+    
     return transformed_data
+
 
 def save_transformed_data(transformed_data):
     """
@@ -154,4 +166,53 @@ def transform_dim_staff(staff_df, department_df):
         on='department_id', how='left'
     )
     
-    return dim_staff[['staff_id', 'first_name', 'last_name', 'department_name', 'location', 'email_address']]
+    return dim_staff[['staff_id', 'first_name', 'last_name', 'department_date', 'location', 'email_address']]
+
+def transform_dim_counterparty(counterparty_df):
+    """
+    Creates dim_counterparty table from counterparty data.
+    """
+    if counterparty_df.empty:
+        logging.warning("Counterparty data is empty; skipping dim_counterparty transformation.")
+        return pd.DataFrame()
+
+    dim_counterparty = counterparty_df[['counterparty_id', 'name', 'address_id', 'phone_number']].drop_duplicates()
+    return dim_counterparty
+
+def transform_dim_currency(currency_df):
+    """
+    Creates dim_currency table from currency data.
+    """
+    if currency_df.empty:
+        logging.warning("Currency data is empty; skipping dim_currency transformation.")
+        return pd.DataFrame()
+
+    dim_currency = currency_df[['currency_id', 'currency_code', 'description']].drop_duplicates()
+    return dim_currency
+
+def transform_dim_transaction(transaction_df, payment_df):
+    """
+    Creates dim_transaction table by combining transaction and payment data.
+    """
+    if transaction_df.empty or payment_df.empty:
+        logging.warning("Transaction or payment data is empty; skipping dim_transaction transformation.")
+        return pd.DataFrame()
+
+    dim_transaction = transaction_df.merge(
+        payment_df[['payment_id', 'amount', 'payment_type_id']],
+        on='transaction_id', how='left'
+    )
+    
+    return dim_transaction[['transaction_id', 'payment_id', 'amount', 'payment_type_id', 'timestamp']]
+
+def transform_dim_address(address_df):
+    """
+    Creates dim_address table from address data.
+    """
+    if address_df.empty:
+        logging.warning("Address data is empty; skipping dim_address transformation.")
+        return pd.DataFrame()
+
+    dim_address = address_df[['address_id', 'street', 'city', 'state', 'zip_code', 'country']].drop_duplicates()
+    return dim_address
+
