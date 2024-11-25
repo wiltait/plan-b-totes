@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.INFO)
 
 # Define source and target S3 buckets
 SOURCE_BUCKET = 'will-ingested-data-bucket'
-TARGET_BUCKET = 'will-processed-bucket'
+TARGET_BUCKET = 'will-processed-data-bucket'
 
 # Define table names
 TABLES = [
