@@ -37,7 +37,7 @@ def connect():
     Returns:
         a connection to ToteSys db
     """
-    secret_name = "database_credentials"
+    secret_name = "Plan-B"
     secret = get_secret(secret_name)
 
     user = secret["user"]
