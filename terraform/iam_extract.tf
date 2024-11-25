@@ -54,7 +54,7 @@ resource "aws_iam_policy" "extract_lambda_policy" {
       {
         Action = ["secretsmanager:GetSecretValue"],
         Effect = "Allow",
-        Resource = "arn:aws:secretsmanager:eu-west-2:440744231761:secret:Plan-B*"
+        Resource = "arn:aws:secretsmanager:eu-west-2:440744231761:secret:Plan-B-SislEM"
       },
       {
         Action = ["sns:Publish"],
