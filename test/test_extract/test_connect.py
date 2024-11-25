@@ -28,7 +28,7 @@ def test_connect():
         # Call the connect function
         connection = connect()
 
-        mock_get_secret.assert_called_once_with("database_credentials")
+        mock_get_secret.assert_called_once_with("Plan-B")
         mock_connection_cls.assert_called_once_with(
             user="test_user",
             database="test_db",
