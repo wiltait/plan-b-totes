@@ -138,11 +138,11 @@ def transform_dim_staff(staff_df, department_df):
         return pd.DataFrame()
 
     dim_staff = staff_df.merge(
-        department_df[['department_id', 'department_date', 'location', 'manager']],
+        department_df[['department_id', 'department_name', 'location', 'manager']],
         on='department_id', how='left'
     )
     
-    return dim_staff[['staff_id', 'first_name', 'last_name', 'department_date', 'location', 'email_address']]
+    return dim_staff[['staff_id', 'first_name', 'last_name', 'department_name', 'location', 'email_address']]
 
 def transform_dim_counterparty(counterparty_df):
     """
