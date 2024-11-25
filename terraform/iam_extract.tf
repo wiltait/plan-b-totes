@@ -49,17 +49,17 @@ resource "aws_iam_policy" "extract_lambda_policy" {
         ],
         
         Effect = "Allow",
-        Resource = "arn:aws:logs:eu-west-2:418295700587:log-group:/aws/lambda/extract:*"
+        Resource = "arn:aws:logs:eu-west-2:440744231761:log-group:/aws/lambda/extract:*"
       },
       {
         Action = ["secretsmanager:GetSecretValue"],
         Effect = "Allow",
-        Resource = "arn:aws:secretsmanager:eu-west-2:${data.aws_caller_identity.current.account_id}:secret:database_credentials*"
+        Resource = "arn:aws:secretsmanager:eu-west-2:440744231761:secret:Plan-B-SislEM*"
       },
       {
         Action = ["sns:Publish"],
         Effect = "Allow",
-        Resource = "arn:aws:sns:eu-west-2:418295700587:extract-errors-topic"
+        Resource = "arn:aws:sns:eu-west-2:440744231761:extract-errors-topic"
       }
     ]
   })
